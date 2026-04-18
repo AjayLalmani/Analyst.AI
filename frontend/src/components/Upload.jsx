@@ -98,7 +98,7 @@ export default function Upload({ handleUrl, handleData }) {
     fd.append("file", file);
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/docs/upload", fd, {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/docs/upload`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setUploadedFileData(res.data);

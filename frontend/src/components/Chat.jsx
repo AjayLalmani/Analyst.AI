@@ -7,7 +7,7 @@ export default function Chat({ csvData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:3000/api/analysis/chat", {
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/analysis/chat`, {
       prompt: prompt,
       csvData: csvData,
     });
