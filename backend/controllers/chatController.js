@@ -17,15 +17,19 @@ exports.chat = async (req, res) => {
           "X-OpenRouter-Title": "Analyst AI",
         },
         body: JSON.stringify({
-          model: "openrouter/free", 
+          model: "openrouter/free",
           messages: [
             {
               role: "system",
-              content: `You are a data analyst and ${csvFileData} this is your csv data. Follow these rules:
-                   - Always respond in bullet points
-                   - Keep answers concise and under 100 words
-                   - Focus only on data insights
-                   - Use simple language, avoid jargon`,
+              content: `You are a data analyst. The CSV data is: ${csvFileData}
+
+RULES:
+1. If the user asks to generate, show, draw, plot, or create any chart/graph/visualization, you MUST respond with ONLY the following format and nothing else:
+CHART_JSON:{"chartType":"bar"|"line"|"pie"|"area","title":"<short title>","xKey":"<field name>","yKey":"<field name>","data":[{"<xKey>":"<value>","<yKey>":<number>},...up to 10 items]}
+
+2. Choose the most meaningful fields for the chart from the CSV data.
+3. For pie charts, use "name" and "value" as the keys.
+4. For all other requests (not chart), respond in bullet points, concise, under 100 words, data insights only.`,
             },
             {
               role: "user",
@@ -37,10 +41,11 @@ exports.chat = async (req, res) => {
     );
 
     const data = await response.json();
-
-    console.log(data.choices[0].message.content);
-    res.status(200).json({ message: data.choices[0].message.content });
+    const content = data.choices[0].message.content;
+    console.log(content);
+    res.status(200).json({ message: content });
   } catch (e) {
     console.log(e);
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
